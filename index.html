@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meshgrid Sim</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="copyright" content="India 4.O Alliance">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<section id="gate" aria-labelledby="gate-title">
+  <div class="gate-card">
+    <p class="eyebrow">India 4.O Alliance</p>
+    <h1 id="gate-title">Meshgrid Sim</h1>
+    <p class="lede">Decentralised campus power with Alliance banking and billing. Confirm you are a person and enter your access code.</p>
+    <div id="cf-widget" class="cf-widget" aria-label="Cloudflare check"></div>
+    <p id="cf-status" class="status" role="status">Cloudflare check: loading…</p>
+    <form id="gate-form" autocomplete="off">
+      <label for="code">Access code</label>
+      <input id="code" type="password" inputmode="text" autocapitalize="characters" spellcheck="false" required>
+      <button id="gate-btn" type="submit">Enter simulator</button>
+    </form>
+    <p id="gate-msg" class="status err" role="alert" hidden></p>
+    <p class="fine">© India 4.O Alliance. All rights reserved. Concept contributors: Omprasad Tandale and team.</p>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="brand">
+      <p class="eyebrow">India 4.O Alliance · MeshNet</p>
+      <h1>Meshgrid Sim <span class="sub">decentralised campus power bank</span></h1>
+    </div>
+    <div class="badges">
+      <span id="mode" class="badge ok">GRID-CONNECTED</span>
+      <span id="clock" class="badge">Day 1 · 09:00</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel map-panel" aria-label="Campus meshgrid map">
+      <div class="panel-head">
+        <h2>Campus meshgrid</h2>
+        <p class="hint">Click a link to cut it. Click a node to drop its MeshNet radio.</p>
+      </div>
+      <svg id="map" viewBox="0 0 800 575" role="img" aria-label="Campus nodes, MeshNet links and power state"></svg>
+      <ul class="legend">
+        <li><i class="dot sell"></i>Surplus</li>
+        <li><i class="dot buy"></i>Deficit</li>
+        <li><i class="dot shed"></i>Load shed</li>
+        <li><i class="dot off"></i>Mesh down</li>
+      </ul>
+    </section>
+
+    <aside class="side">
+      <section class="panel">
+        <div class="panel-head"><h2>Run</h2></div>
+        <div class="row">
+          <button id="play" class="btn" aria-pressed="true">Pause</button>
+          <label class="inline" for="speed">Speed
+            <select id="speed">
+              <option value="5">Slow · 5 min/s</option>
+              <option value="15" selected>Demo · 15 min/s</option>
+              <option value="60">Fast · 60 min/s</option>
+              <option value="240">Turbo · 240 min/s</option>
+            </select>
+          </label>
+          <button id="reset" class="btn ghost">Reset</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Scenarios</h2></div>
+        <div class="chips" id="scen">
+          <button class="chip" data-s="cloud" aria-pressed="false">Cloudy day</button>
+          <button class="chip" data-s="lull" aria-pressed="false">Wind lull</button>
+          <button class="chip" data-s="peak" aria-pressed="false">Peak demand</button>
+          <button class="chip danger" data-s="outage" aria-pressed="false">Grid outage</button>
+          <button class="chip" data-s="link" aria-pressed="false">Cut Hub–Hospital link</button>
+          <button class="chip" data-s="node" aria-pressed="false">Drop Library radio</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Live battery mode</h2></div>
+        <label class="check"><input id="live" type="checkbox"> Use this device's battery as the Hub BESS</label>
+        <label class="check"><input id="unplug" type="checkbox" checked> Unplugging the charger = grid outage</label>
+        <label class="inline" for="cap">Hub size at 100%
+          <select id="cap"><option value="150">150 kWh</option><option value="300" selected>300 kWh</option><option value="500">500 kWh</option></select>
+        </label>
+        <div id="manualWrap" hidden>
+          <label for="manual">Manual battery level <output id="manualOut">80%</output></label>
+          <input id="manual" type="range" min="5" max="100" value="80">
+        </div>
+        <p id="liveNote" class="hint">Off. Simulated battery in use.</p>
+      </section>
+    </aside>
+  </main>
+
+  <section class="kpis" aria-label="Key indicators">
+    <div class="kpi"><span>Renewable share</span><b id="k-ren">–</b></div>
+    <div class="kpi"><span>Critical load served</span><b id="k-crit">–</b></div>
+    <div class="kpi"><span>Hub battery</span><b id="k-soc">–</b></div>
+    <div class="kpi"><span>Peer-to-peer traded</span><b id="k-p2p">–</b></div>
+    <div class="kpi"><span>Alliance revenue</span><b id="k-fee">–</b></div>
+    <div class="kpi"><span>Grid import</span><b id="k-grid">–</b></div>
+    <div class="kpi"><span>Diesel avoided</span><b id="k-dg">–</b></div>
+    <div class="kpi"><span>CO₂ avoided</span><b id="k-co2">–</b></div>
+  </section>
+
+  <section class="panel wide">
+    <div class="panel-head"><h2>Power balance</h2>
+      <p class="hint">Last 24 simulated hours · kW (left) · Hub battery % (right)</p></div>
+    <canvas id="chart" height="220" aria-label="Power balance chart"></canvas>
+    <ul class="legend chartkey">
+      <li><i class="dot sell"></i>Generation</li><li><i class="dot load"></i>Load</li><li><i class="dot soc"></i>Hub battery</li>
+    </ul>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <div class="panel-head"><h2>Alliance statements</h2><p class="hint">₹ + earned · − owed</p></div>
+      <div class="scroll"><table id="acct">
+        <thead><tr><th>Node</th><th>Load kW</th><th>Gen kW</th><th>Credits kWh</th><th>Balance ₹</th><th>Mesh</th></tr></thead>
+        <tbody></tbody></table></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Alliance ledger</h2>
+        <div class="row"><button id="verify" class="btn ghost sm">Verify chain</button><button id="tamper" class="btn ghost sm">Tamper test</button></div></div>
+      <p id="chainState" class="status">Chain not checked yet.</p>
+      <div class="scroll"><table id="ledger">
+        <thead><tr><th>#</th><th>Time</th><th>P2P kWh</th><th>Fee ₹</th><th>Hash</th></tr></thead>
+        <tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="panel wide">
+    <div class="panel-head"><h2>Event log</h2></div>
+    <ol id="log" class="log"></ol>
+  </section>
+
+  <footer class="foot">
+    <p>© India 4.O Alliance. All rights reserved. Concept contributors: Omprasad Tandale and team. Simulation only, no real electrical connection.</p>
+    <p>Prices: grid ₹8.00 · feed-in ₹3.00 · peer-to-peer ₹3.50–7.50 by demand · hub pool ₹6.50 · diesel ₹14.00 · Alliance fee 2% on trades · banking fee ₹0.40/kWh.</p>
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script src="gate.js"></script>
+</body>
+</html>

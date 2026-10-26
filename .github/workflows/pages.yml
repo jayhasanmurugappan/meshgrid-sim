@@ -1,0 +1,32 @@
+# MANUAL deploy only. Nothing deploys until you run this workflow from the Actions tab
+# and set Settings > Pages > Source to "GitHub Actions".
+# TODO before first run: pin each action to a full commit SHA (see GitHub docs, "Security hardening").
+name: Deploy to GitHub Pages (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble site (static files only)
+        run: |
+          mkdir site
+          cp index.html styles.css config.js gate.js app.js robots.txt .nojekyll site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
